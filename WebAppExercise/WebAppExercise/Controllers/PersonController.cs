@@ -25,5 +25,13 @@ namespace WebAppExercise.Controllers
 
             return await _personService.GetPeople(includePII);
         }
+
+        [HttpGet("{id}")]
+        public async Task<Person> Get(long id)
+        {
+            var includePII = HttpContext.User.HasClaim(SecurityConstants.ClaimTypeIncludePII, string.Empty);
+
+            return await _personService.GetPerson(id, includePII);
+        }
     }
 }

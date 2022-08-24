@@ -6,6 +6,7 @@ namespace WebAppExercise.Services
     public interface IPersonService
     {
         Task<List<Person>> GetPeople(bool includePII);
+        Task<Person> GetPerson(long id, bool includePII);
     }
 
     public class PersonService : IPersonService
@@ -26,6 +27,13 @@ namespace WebAppExercise.Services
             }
 
             return people ?? new List<Person>();
+        }
+
+        public async Task<Person> GetPerson(long id, bool includePII)
+        {
+            var people = await GetPeople(includePII);
+
+            return people.FirstOrDefault(p => p.Id == id);
         }
     }
 }
