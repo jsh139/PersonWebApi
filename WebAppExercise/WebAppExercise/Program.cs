@@ -25,11 +25,8 @@ builder.Services.Configure<List<ApiKey>>(builder.Configuration.GetSection("ApiKe
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
