@@ -15,6 +15,6 @@ namespace WebAppExercise.Models
         public string SSN { get; set; }
 
         [SensitiveData]
-        public int Age { get; set; }
+        public int? Age { get; set; }
     }
 }

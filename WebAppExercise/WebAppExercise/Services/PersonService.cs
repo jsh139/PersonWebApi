@@ -20,7 +20,7 @@ namespace WebAppExercise.Services
             {
                 people?.ForEach(p =>
                 {
-                    p.Age = -99;
+                    p.Age = null;
                     p.SSN = "XXXXXX";
                 });
             }
