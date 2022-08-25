@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using System.Reflection;
+using WebAppExercise.Attributes;
 using WebAppExercise.Models;
 
 namespace WebAppExercise.Services
@@ -19,14 +21,28 @@ namespace WebAppExercise.Services
 
             if (!includePII)
             {
-                people?.ForEach(p =>
-                {
-                    p.Age = null;
-                    p.SSN = "XXXXXX";
-                });
+                var type = typeof(Person);
+                var sensitiveFields = type.GetProperties()
+                    .Where(p => p.CustomAttributes.Any(a => a.AttributeType == typeof(SensitiveDataAttribute)))
+                    .ToList();
+
+                people?.ForEach(p => RedactSensitiveData(type, p, sensitiveFields));
             }
 
             return people ?? new List<Person>();
+        }
+
+        private void RedactSensitiveData(Type type, Person person, List<PropertyInfo> sensitiveFields)
+        {
+            foreach (var field in sensitiveFields)
+            {
+                var prop = type.GetProperty(field.Name);
+
+                if (prop != null && prop.CanWrite)
+                {
+                    prop.SetValue(person, null);
+                }
+            }
         }
 
         public async Task<Person> GetPerson(long id, bool includePII)

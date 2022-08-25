@@ -18,20 +18,27 @@ namespace WebAppExercise.Controllers
             _personService = personService;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<Person>> Get()
+        [HttpGet, Produces(typeof(List<Person>))]
+        public async Task<IActionResult> Get()
         {
             var includePII = HttpContext.User.HasClaim(SecurityConstants.ClaimTypeIncludePII, string.Empty);
 
-            return await _personService.GetPeople(includePII);
+            return Ok(await _personService.GetPeople(includePII));
         }
 
-        [HttpGet("{id}")]
-        public async Task<Person> Get(long id)
+        [HttpGet("{id}"), Produces(typeof(Person))]
+        public async Task<IActionResult> Get(long id)
         {
             var includePII = HttpContext.User.HasClaim(SecurityConstants.ClaimTypeIncludePII, string.Empty);
 
-            return await _personService.GetPerson(id, includePII);
+            var person = await _personService.GetPerson(id, includePII);
+
+            if (person == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(person);
         }
     }
 }
